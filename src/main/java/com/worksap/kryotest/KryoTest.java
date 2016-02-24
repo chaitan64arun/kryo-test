@@ -13,9 +13,11 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.minlog.Log;
+import com.worksap.kryotest.helper.MyAbstractClass;
 
 public class KryoTest {
 
+    private static final String SEPARATOR = "----------------------------------------------------------------";
     final static Logger logger = Logger.getLogger(KryoTest.class);
 
     /**
@@ -28,9 +30,9 @@ public class KryoTest {
         // Basic Kryo Instance
         Kryo kryo = new Kryo();
         Log.ERROR();
-        logger.info("----------------------------------------------------------------");
+        logger.info(SEPARATOR);
         logger.info("             Class                  | Pattern  |   Size   | Can ");
-        logger.info("----------------------------------------------------------------");
+        logger.info(SEPARATOR);
         testSerializer(kryo, CompatibleFieldSerializer.class);
         testSerializer(kryo, FieldSerializer.class);
 
@@ -39,20 +41,29 @@ public class KryoTest {
     @SuppressWarnings("rawtypes")
     private static void testSerializer(Kryo kryo, Class<? extends Serializer> serializer) {
         logger.info(StringUtils.center(serializer.getSimpleName(), 65));
+        logger.info(SEPARATOR);
         kryo.setDefaultSerializer(serializer);
-        
+
         TransientField transientObject = new TransientField();
         transientObject.transientInt = 90;
         transientObject.myInt = 90;
-
         testObject(kryo, transientObject);
-        
+
         StaticField staticObject = new StaticField();
         staticObject.myInt = 90;
-
         testObject(kryo, staticObject);
-        
-        logger.info("----------------------------------------------------------------");
+
+        MyAbstractClass extendedRepeatObject = new ExtendingRepeatClass();
+        extendedRepeatObject.myInt = 11;
+        testObject(kryo, extendedRepeatObject);
+
+        MyAbstractClass extendedObject = new ExtendingClass();
+        extendedObject.myInt = 11;
+        ((ExtendingClass)extendedObject).myNewInt = 1746;
+        ((ExtendingClass)extendedObject).myPrimitiveLong = -46L;
+        testObject(kryo, extendedObject);
+
+        logger.info(SEPARATOR);
     }
 
     private static void testObject(Kryo kryo, Object object) {
@@ -100,13 +111,19 @@ public class KryoTest {
             } else if (write.equals(Pattern.CLASSnOBJECT)) {
                 returnObject = kryo.readClassAndObject(input);
             }
+            // logger.info(object + "##"+ returnObject);
+
             serialized = object.toString().compareTo(returnObject.toString()) == 0 ? 'Y' : 'N';
         }
         String line = String.format("%s | %s | %8d | %2s",
                 StringUtils.center(object.getClass().getSimpleName(), 35),
                 StringUtils.center(read.ordinal() + "-" + write.ordinal(), 8), size,
                 serialized);
-        logger.info(line);
+        if (serialized != 'Y') {
+            logger.error(line);
+        } else {
+            logger.info(line);
+        }
 
     }
 
