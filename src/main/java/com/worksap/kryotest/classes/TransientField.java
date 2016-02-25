@@ -1,4 +1,4 @@
-package com.worksap.kryotest;
+package com.worksap.kryotest.classes;
 
 public class TransientField {
     int myInt = 190;
@@ -8,8 +8,8 @@ public class TransientField {
     public String toString() {
         return myInt + "--" + transientInt;
     }
-    
-    public void changeValues(){
+
+    public void changeValues() {
         myInt = 199423;
         transientInt = 932423;
     }

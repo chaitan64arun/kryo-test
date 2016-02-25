@@ -1,4 +1,4 @@
-package com.worksap.kryotest;
+package com.worksap.kryotest.classes;
 
 public class StaticField {
     int myInt = 190;
@@ -8,8 +8,8 @@ public class StaticField {
     public String toString() {
         return myInt + "--" + staticInt;
     }
-    
-    public void changeValues(){
+
+    public void changeValues() {
         myInt = 1992323;
         staticInt = 232423;
     }

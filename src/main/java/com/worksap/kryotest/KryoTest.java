@@ -2,9 +2,12 @@ package com.worksap.kryotest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.log4j.Logger;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
@@ -13,52 +16,126 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.minlog.Log;
+import com.worksap.kryotest.classes.CollectionClass;
+import com.worksap.kryotest.classes.ComplexClass;
+import com.worksap.kryotest.classes.ExtendingClass;
+import com.worksap.kryotest.classes.ExtendingRepeatClass;
+import com.worksap.kryotest.classes.GenericClass;
+import com.worksap.kryotest.classes.MyImplementingClass;
+import com.worksap.kryotest.classes.NullPrimitiveClass;
+import com.worksap.kryotest.classes.OnlyPrimitiveClass;
+import com.worksap.kryotest.classes.StaticField;
+import com.worksap.kryotest.classes.TransientField;
+import com.worksap.kryotest.classes.heavy.HeavyClass;
+import com.worksap.kryotest.classes.heavy.NullHeavyClass;
+import com.worksap.kryotest.classes.heavy.PrivateHeavyClass;
+import com.worksap.kryotest.classes.heavy.StaticHeavyClass;
+import com.worksap.kryotest.classes.heavy.StaticNullHeavyClass;
 import com.worksap.kryotest.helper.MyAbstractClass;
 import com.worksap.kryotest.helper.MyInterface;
+
+import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 
 public class KryoTest {
 
     private static final String SEPARATOR = "-----------------------------------------------------------------------------------------------";
     final static Logger logger = Logger.getLogger(KryoTest.class);
-    
+
     // Basic Kryo Instance
     private static Kryo kryo = new Kryo();
 
     @SuppressWarnings("rawtypes")
     Class<? extends Serializer> currentSerializer = null;
-    
+
     public static void main(String[] args) {
 
         Log.ERROR();
         KryoTest test = new KryoTest();
         test.run();
     }
-    
-    public void run(){
-        
+
+    public void run() {
+
+        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         logger.info(SEPARATOR);
         logger.info("             Class                  | Pattern  |          Serializer          |   Size   | Can ");
         logger.info(SEPARATOR);
-        
+
         TransientField transientObject = new TransientField();
         transientObject.changeValues();
-        testObject( transientObject);
+        testObject(transientObject);
 
         StaticField staticObject = new StaticField();
         staticObject.changeValues();
-        testObject( staticObject);
+        testObject(staticObject);
+
         MyAbstractClass extendedRepeatObject = new ExtendingRepeatClass();
         extendedRepeatObject.changeValues();
-        testObject( extendedRepeatObject);
+        testObject(extendedRepeatObject);
 
         MyAbstractClass extendedObject = new ExtendingClass();
         extendedObject.changeValues();
-        testObject( extendedObject);
-        
+        testObject(extendedObject);
+
         MyInterface myImplementingClass = new MyImplementingClass();
         ((MyImplementingClass)myImplementingClass).changeValues();
-        testObject( myImplementingClass);
+        testObject(myImplementingClass);
+
+        GenericClass<Integer> intGeneric = new GenericClass<>();
+        intGeneric.changeValues(1234);
+        testObject(intGeneric);
+
+        GenericClass<MyAbstractClass> abstractGeneric = new GenericClass<>();
+        abstractGeneric.changeValues(extendedObject);
+        testObject(abstractGeneric);
+
+        GenericClass<MyInterface> interfaceGeneric = new GenericClass<>();
+        interfaceGeneric.changeValues(myImplementingClass);
+        testObject(interfaceGeneric);
+
+        CollectionClass collectionClass = new CollectionClass();
+        collectionClass.changeValues(Arrays.asList(1256, 53, 866),
+                Arrays.asList(myImplementingClass, interfaceGeneric), Arrays.asList(intGeneric, extendedObject));
+        testObject(collectionClass);
+
+        ComplexClass<MyAbstractClass> complexClass = new ComplexClass<>();
+        complexClass.changeValues(1983342, collectionClass, abstractGeneric,
+                new ImmutablePair<>(12313, extendedObject), extendedObject);
+        testObject(complexClass);
         
+        OnlyPrimitiveClass onlyPrimitiveClass = new OnlyPrimitiveClass();
+        onlyPrimitiveClass.changeValues();
+        testObject(onlyPrimitiveClass);
+        
+        NullPrimitiveClass nullPrimitiveClass = new NullPrimitiveClass();
+        nullPrimitiveClass.changeValues();
+        testObject(nullPrimitiveClass);
+        
+        testHeavyPattern();
+
+    }
+
+    private void testHeavyPattern() {
+        HeavyClass heavyClass = new HeavyClass();
+        heavyClass.changeValues();
+        testObject(heavyClass);
+        
+        NullHeavyClass nullHeavyClass = new NullHeavyClass();
+        nullHeavyClass.changeValues();
+        testObject(nullHeavyClass);
+        
+        StaticHeavyClass staticHeavyClass = new StaticHeavyClass();
+        StaticHeavyClass.changeValues();
+        testObject(staticHeavyClass);
+        
+        StaticNullHeavyClass staticNullHeavyClass = new StaticNullHeavyClass();
+        staticNullHeavyClass.changeValues();
+        testObject(staticNullHeavyClass);
+        
+        PrivateHeavyClass privateHeavyClass = new PrivateHeavyClass();
+        privateHeavyClass.changeValues();
+        testObject(privateHeavyClass);
     }
 
     @SuppressWarnings("rawtypes")
@@ -68,16 +145,16 @@ public class KryoTest {
 
         testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.OBJECT);
 
-        testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.CLASSnOBJECT);
+        //testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.CLASSnOBJECT);
 
-        testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.OBJECT);
+        //testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.OBJECT);
 
         testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.CLASSnOBJECT);
         logger.info(SEPARATOR);
     }
 
     public void testObject(Object object) {
-        testSerializer( CompatibleFieldSerializer.class, object);
+        testSerializer(CompatibleFieldSerializer.class, object);
         testSerializer(FieldSerializer.class, object);
     }
 
@@ -115,7 +192,7 @@ public class KryoTest {
             } else if (write.equals(Pattern.CLASSnOBJECT)) {
                 returnObject = kryo.readClassAndObject(input);
             }
-             //logger.info(object + "##"+ returnObject);
+            // logger.info(object + "##"+ returnObject);
 
             serialized = object.toString().compareTo(returnObject.toString()) == 0 ? 'Y' : 'N';
         }

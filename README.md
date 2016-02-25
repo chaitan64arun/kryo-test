@@ -4,8 +4,6 @@ Test Kryo for different changes
 
 ## TODO
 1. Generic
-2. Abstract Class
-3. Interface
 4. Java Object
 5. Collection Type
 6. CT Object

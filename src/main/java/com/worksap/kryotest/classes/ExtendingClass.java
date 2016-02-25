@@ -1,18 +1,18 @@
-package com.worksap.kryotest;
+package com.worksap.kryotest.classes;
 
 import com.worksap.kryotest.helper.MyAbstractClass;
 
-public class ExtendingClass extends MyAbstractClass{
-    
+public class ExtendingClass extends MyAbstractClass {
+
     Integer myNewInt = 17;
     long myPrimitiveLong = 170L;
 
     @Override
     public String toString() {
-        return super.toString()+"--" + myNewInt + "--" + myPrimitiveLong;
+        return super.toString() + "--" + myNewInt + "--" + myPrimitiveLong;
     }
-    
-    public void changeValues(){
+
+    public void changeValues() {
         super.changeValues();
         myNewInt = 19923;
         myPrimitiveLong = 2324234L;
