@@ -41,9 +41,6 @@ public class KryoTest {
     private static final String SEPARATOR = "-----------------------------------------------------------------------------------------------";
     final static Logger logger = Logger.getLogger(KryoTest.class);
 
-    // Basic Kryo Instance
-    private static Kryo kryo = new Kryo();
-
     @SuppressWarnings("rawtypes")
     Class<? extends Serializer> currentSerializer = null;
 
@@ -54,10 +51,15 @@ public class KryoTest {
         test.run();
     }
 
-    public void run() {
-
+    Kryo getKryo() {
+        Kryo kryo = new Kryo();
         kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        return kryo;
+
+    }
+
+    public void run() {
         logger.info(SEPARATOR);
         logger.info("             Class                  | Pattern  |          Serializer          |   Size   | Can ");
         logger.info(SEPARATOR);
@@ -103,15 +105,15 @@ public class KryoTest {
         complexClass.changeValues(1983342, collectionClass, abstractGeneric,
                 new ImmutablePair<>(12313, extendedObject), extendedObject);
         testObject(complexClass);
-        
+
         OnlyPrimitiveClass onlyPrimitiveClass = new OnlyPrimitiveClass();
         onlyPrimitiveClass.changeValues();
         testObject(onlyPrimitiveClass);
-        
+
         NullPrimitiveClass nullPrimitiveClass = new NullPrimitiveClass();
         nullPrimitiveClass.changeValues();
         testObject(nullPrimitiveClass);
-        
+
         testHeavyPattern();
 
     }
@@ -120,19 +122,19 @@ public class KryoTest {
         HeavyClass heavyClass = new HeavyClass();
         heavyClass.changeValues();
         testObject(heavyClass);
-        
+
         NullHeavyClass nullHeavyClass = new NullHeavyClass();
         nullHeavyClass.changeValues();
         testObject(nullHeavyClass);
-        
+
         StaticHeavyClass staticHeavyClass = new StaticHeavyClass();
         StaticHeavyClass.changeValues();
         testObject(staticHeavyClass);
-        
+
         StaticNullHeavyClass staticNullHeavyClass = new StaticNullHeavyClass();
         staticNullHeavyClass.changeValues();
         testObject(staticNullHeavyClass);
-        
+
         PrivateHeavyClass privateHeavyClass = new PrivateHeavyClass();
         privateHeavyClass.changeValues();
         testObject(privateHeavyClass);
@@ -141,13 +143,16 @@ public class KryoTest {
     @SuppressWarnings("rawtypes")
     public void testSerializer(Class<? extends Serializer> serializer, Object object) {
         currentSerializer = serializer;
-        kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
+        
+        Kryo kryo = getKryo();
+
+        kryo.setDefaultSerializer(serializer);
 
         testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.OBJECT);
 
-        //testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.CLASSnOBJECT);
+        // testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.CLASSnOBJECT);
 
-        //testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.OBJECT);
+        // testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.OBJECT);
 
         testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.CLASSnOBJECT);
         logger.info(SEPARATOR);
