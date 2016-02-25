@@ -36,10 +36,10 @@ import com.worksap.kryotest.helper.MyInterface;
 
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 
-public class KryoTest {
+public class KryoBasicTest {
 
     private static final String SEPARATOR = "-----------------------------------------------------------------------------------------------";
-    final static Logger logger = Logger.getLogger(KryoTest.class);
+    final static Logger logger = Logger.getLogger(KryoBasicTest.class);
 
     @SuppressWarnings("rawtypes")
     Class<? extends Serializer> currentSerializer = null;
@@ -47,7 +47,7 @@ public class KryoTest {
     public static void main(String[] args) {
 
         Log.ERROR();
-        KryoTest test = new KryoTest();
+        KryoBasicTest test = new KryoBasicTest();
         test.run();
     }
 
@@ -64,13 +64,7 @@ public class KryoTest {
         logger.info("             Class                  | Pattern  |          Serializer          |   Size   | Can ");
         logger.info(SEPARATOR);
 
-        TransientField transientObject = new TransientField();
-        transientObject.changeValues();
-        testObject(transientObject);
-
-        StaticField staticObject = new StaticField();
-        staticObject.changeValues();
-        testObject(staticObject);
+        testBasic();
 
         MyAbstractClass extendedRepeatObject = new ExtendingRepeatClass();
         extendedRepeatObject.changeValues();
@@ -116,6 +110,16 @@ public class KryoTest {
 
         testHeavyPattern();
 
+    }
+
+    private void testBasic() {
+        TransientField transientObject = new TransientField();
+        transientObject.changeValues();
+        testObject(transientObject);
+
+        StaticField staticObject = new StaticField();
+        staticObject.changeValues();
+        testObject(staticObject);
     }
 
     private void testHeavyPattern() {
