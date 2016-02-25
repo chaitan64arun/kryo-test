@@ -8,4 +8,8 @@ public abstract class MyAbstractClass {
     public String toString() {
         return myPrimitiveInt + "--" + myInt;
     }
+    public void changeValues(){
+        myInt = 3695;
+        myPrimitiveInt = 232485;
+    }
 }

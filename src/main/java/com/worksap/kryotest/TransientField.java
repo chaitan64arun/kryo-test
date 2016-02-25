@@ -8,4 +8,9 @@ public class TransientField {
     public String toString() {
         return myInt + "--" + transientInt;
     }
+    
+    public void changeValues(){
+        myInt = 199423;
+        transientInt = 932423;
+    }
 }

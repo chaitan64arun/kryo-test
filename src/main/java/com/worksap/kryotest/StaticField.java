@@ -8,4 +8,9 @@ public class StaticField {
     public String toString() {
         return myInt + "--" + staticInt;
     }
+    
+    public void changeValues(){
+        myInt = 1992323;
+        staticInt = 232423;
+    }
 }

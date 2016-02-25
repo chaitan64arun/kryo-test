@@ -11,4 +11,10 @@ public class ExtendingRepeatClass extends MyAbstractClass{
     public String toString() {
         return super.toString()+"--" + myInt + "--" + myPrimitiveLong;
     }
+    
+    public void changeValues(){
+        super.changeValues();
+        myInt = 1992323;
+        myPrimitiveLong = 2324234L;
+    }
 }

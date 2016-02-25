@@ -17,56 +17,52 @@ import com.worksap.kryotest.helper.MyAbstractClass;
 
 public class KryoTest {
 
-    private static final String SEPARATOR = "----------------------------------------------------------------";
+    private static final String SEPARATOR = "-----------------------------------------------------------------------------------------------";
     final static Logger logger = Logger.getLogger(KryoTest.class);
+    
+    // Basic Kryo Instance
+    private static Kryo kryo = new Kryo();
 
-    /**
-     * 
-     * @param args
-     */
-
+    @SuppressWarnings("rawtypes")
+    Class<? extends Serializer> currentSerializer = null;
+    
     public static void main(String[] args) {
 
-        // Basic Kryo Instance
-        Kryo kryo = new Kryo();
         Log.ERROR();
-        logger.info(SEPARATOR);
-        logger.info("             Class                  | Pattern  |   Size   | Can ");
-        logger.info(SEPARATOR);
-        testSerializer(kryo, CompatibleFieldSerializer.class);
-        testSerializer(kryo, FieldSerializer.class);
+        KryoTest test = new KryoTest();
+        test.run();
+        //test.testSerializer(kryo, CompatibleFieldSerializer.class);
+        //test.testSerializer(kryo, FieldSerializer.class);
 
+    }
+    
+    public void run(){
+        
+        logger.info(SEPARATOR);
+        logger.info("             Class                  | Pattern  |          Serializer          |   Size   | Can ");
+        logger.info(SEPARATOR);
+        
+        TransientField transientObject = new TransientField();
+        transientObject.changeValues();
+        testObject( transientObject);
+
+        StaticField staticObject = new StaticField();
+        staticObject.changeValues();
+        testObject( staticObject);
+        MyAbstractClass extendedRepeatObject = new ExtendingRepeatClass();
+        extendedRepeatObject.changeValues();
+        testObject( extendedRepeatObject);
+
+        MyAbstractClass extendedObject = new ExtendingClass();
+        extendedObject.changeValues();
+        testObject( extendedObject);
+        
     }
 
     @SuppressWarnings("rawtypes")
-    private static void testSerializer(Kryo kryo, Class<? extends Serializer> serializer) {
-        logger.info(StringUtils.center(serializer.getSimpleName(), 65));
-        logger.info(SEPARATOR);
-        kryo.setDefaultSerializer(serializer);
-
-        TransientField transientObject = new TransientField();
-        transientObject.transientInt = 90;
-        transientObject.myInt = 90;
-        testObject(kryo, transientObject);
-
-        StaticField staticObject = new StaticField();
-        staticObject.myInt = 90;
-        testObject(kryo, staticObject);
-
-        MyAbstractClass extendedRepeatObject = new ExtendingRepeatClass();
-        extendedRepeatObject.myInt = 11;
-        testObject(kryo, extendedRepeatObject);
-
-        MyAbstractClass extendedObject = new ExtendingClass();
-        extendedObject.myInt = 11;
-        ((ExtendingClass)extendedObject).myNewInt = 1746;
-        ((ExtendingClass)extendedObject).myPrimitiveLong = -46L;
-        testObject(kryo, extendedObject);
-
-        logger.info(SEPARATOR);
-    }
-
-    private static void testObject(Kryo kryo, Object object) {
+    public void testSerializer(Class<? extends Serializer> serializer, Object object) {
+        currentSerializer = serializer;
+        kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
 
         testDifferentPatterns(kryo, object, Pattern.OBJECT, Pattern.OBJECT);
 
@@ -75,9 +71,15 @@ public class KryoTest {
         testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.OBJECT);
 
         testDifferentPatterns(kryo, object, Pattern.CLASSnOBJECT, Pattern.CLASSnOBJECT);
+        logger.info(SEPARATOR);
     }
 
-    private static void testDifferentPatterns(Kryo kryo, Object object, Pattern read, Pattern write) {
+    public void testObject(Object object) {
+        testSerializer( CompatibleFieldSerializer.class, object);
+        testSerializer(FieldSerializer.class, object);
+    }
+
+    private void testDifferentPatterns(Kryo kryo, Object object, Pattern read, Pattern write) {
 
         // For Logging;
         long size = -1;
@@ -115,9 +117,11 @@ public class KryoTest {
 
             serialized = object.toString().compareTo(returnObject.toString()) == 0 ? 'Y' : 'N';
         }
-        String line = String.format("%s | %s | %8d | %2s",
+        String line = String.format("%s | %s | %s |%8d | %2s",
                 StringUtils.center(object.getClass().getSimpleName(), 35),
-                StringUtils.center(read.ordinal() + "-" + write.ordinal(), 8), size,
+                StringUtils.center(read.ordinal() + "-" + write.ordinal(), 8),
+                StringUtils.center(currentSerializer.getSimpleName(), 28),
+                size,
                 serialized);
         if (serialized != 'Y') {
             logger.error(line);
