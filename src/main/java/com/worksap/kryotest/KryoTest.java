@@ -14,6 +14,7 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.minlog.Log;
 import com.worksap.kryotest.helper.MyAbstractClass;
+import com.worksap.kryotest.helper.MyInterface;
 
 public class KryoTest {
 
@@ -31,9 +32,6 @@ public class KryoTest {
         Log.ERROR();
         KryoTest test = new KryoTest();
         test.run();
-        //test.testSerializer(kryo, CompatibleFieldSerializer.class);
-        //test.testSerializer(kryo, FieldSerializer.class);
-
     }
     
     public void run(){
@@ -56,6 +54,10 @@ public class KryoTest {
         MyAbstractClass extendedObject = new ExtendingClass();
         extendedObject.changeValues();
         testObject( extendedObject);
+        
+        MyInterface myImplementingClass = new MyImplementingClass();
+        ((MyImplementingClass)myImplementingClass).changeValues();
+        testObject( myImplementingClass);
         
     }
 
@@ -113,7 +115,7 @@ public class KryoTest {
             } else if (write.equals(Pattern.CLASSnOBJECT)) {
                 returnObject = kryo.readClassAndObject(input);
             }
-            // logger.info(object + "##"+ returnObject);
+             //logger.info(object + "##"+ returnObject);
 
             serialized = object.toString().compareTo(returnObject.toString()) == 0 ? 'Y' : 'N';
         }
