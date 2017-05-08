@@ -1,4 +1,4 @@
-package com.worksap.kryotest.helper;
+package io.github.chaitan64arun.helper;
 
 public abstract class MyAbstractClass {
     int myPrimitiveInt = 3;

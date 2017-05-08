@@ -1,6 +1,6 @@
-package com.worksap.kryotest.classes;
+package io.github.chaitan64arun.classes;
 
-import com.worksap.kryotest.helper.MyInterface;
+import io.github.chaitan64arun.helper.MyInterface;
 
 public class MyImplementingClass implements MyInterface {
 

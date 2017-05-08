@@ -1,4 +1,4 @@
-package com.worksap.kryotest.classes;
+package io.github.chaitan64arun.classes;
 
 public class TransientField {
     int myInt = 190;

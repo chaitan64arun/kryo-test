@@ -1,4 +1,4 @@
-package com.worksap.kryotest;
+package io.github.chaitan64arun;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -1,4 +1,4 @@
-package com.worksap.kryotest.classes;
+package io.github.chaitan64arun.classes;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 

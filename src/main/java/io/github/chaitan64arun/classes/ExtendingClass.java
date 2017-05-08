@@ -1,6 +1,6 @@
-package com.worksap.kryotest.classes;
+package io.github.chaitan64arun.classes;
 
-import com.worksap.kryotest.helper.MyAbstractClass;
+import io.github.chaitan64arun.helper.MyAbstractClass;
 
 public class ExtendingClass extends MyAbstractClass {
 

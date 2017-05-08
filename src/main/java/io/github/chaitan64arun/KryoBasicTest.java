@@ -1,4 +1,22 @@
-package com.worksap.kryotest;
+package io.github.chaitan64arun;
+
+import io.github.chaitan64arun.classes.CollectionClass;
+import io.github.chaitan64arun.classes.ComplexClass;
+import io.github.chaitan64arun.classes.ExtendingClass;
+import io.github.chaitan64arun.classes.ExtendingRepeatClass;
+import io.github.chaitan64arun.classes.GenericClass;
+import io.github.chaitan64arun.classes.MyImplementingClass;
+import io.github.chaitan64arun.classes.NullPrimitiveClass;
+import io.github.chaitan64arun.classes.OnlyPrimitiveClass;
+import io.github.chaitan64arun.classes.StaticField;
+import io.github.chaitan64arun.classes.TransientField;
+import io.github.chaitan64arun.classes.heavy.HeavyClass;
+import io.github.chaitan64arun.classes.heavy.NullHeavyClass;
+import io.github.chaitan64arun.classes.heavy.PrivateHeavyClass;
+import io.github.chaitan64arun.classes.heavy.StaticHeavyClass;
+import io.github.chaitan64arun.classes.heavy.StaticNullHeavyClass;
+import io.github.chaitan64arun.helper.MyAbstractClass;
+import io.github.chaitan64arun.helper.MyInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,23 +34,6 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.minlog.Log;
-import com.worksap.kryotest.classes.CollectionClass;
-import com.worksap.kryotest.classes.ComplexClass;
-import com.worksap.kryotest.classes.ExtendingClass;
-import com.worksap.kryotest.classes.ExtendingRepeatClass;
-import com.worksap.kryotest.classes.GenericClass;
-import com.worksap.kryotest.classes.MyImplementingClass;
-import com.worksap.kryotest.classes.NullPrimitiveClass;
-import com.worksap.kryotest.classes.OnlyPrimitiveClass;
-import com.worksap.kryotest.classes.StaticField;
-import com.worksap.kryotest.classes.TransientField;
-import com.worksap.kryotest.classes.heavy.HeavyClass;
-import com.worksap.kryotest.classes.heavy.NullHeavyClass;
-import com.worksap.kryotest.classes.heavy.PrivateHeavyClass;
-import com.worksap.kryotest.classes.heavy.StaticHeavyClass;
-import com.worksap.kryotest.classes.heavy.StaticNullHeavyClass;
-import com.worksap.kryotest.helper.MyAbstractClass;
-import com.worksap.kryotest.helper.MyInterface;
 
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 

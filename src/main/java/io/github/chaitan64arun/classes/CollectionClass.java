@@ -1,4 +1,4 @@
-package com.worksap.kryotest.classes;
+package io.github.chaitan64arun.classes;
 
 import java.util.Arrays;
 import java.util.List;

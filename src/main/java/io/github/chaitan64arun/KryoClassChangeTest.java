@@ -1,4 +1,7 @@
-package com.worksap.kryotest;
+package io.github.chaitan64arun;
+
+import io.github.chaitan64arun.classes.ExtendingClass;
+import io.github.chaitan64arun.helper.MyAbstractClass;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,8 +26,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.minlog.Log;
-import com.worksap.kryotest.classes.ExtendingClass;
-import com.worksap.kryotest.helper.MyAbstractClass;
 
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 

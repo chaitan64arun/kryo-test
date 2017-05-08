@@ -1,4 +1,4 @@
-package com.worksap.kryotest.classes.heavy;
+package io.github.chaitan64arun.classes.heavy;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
